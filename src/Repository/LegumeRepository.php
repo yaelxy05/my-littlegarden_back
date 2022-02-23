@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Legume;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Legume|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,7 +19,19 @@ class LegumeRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Legume::class);
     }
+    public function findLegumeForOneUser(User $user)
+    {
+        $user = $user->getId();
+        $entityManager = $this->getEntityManager();
 
+        $query = $entityManager->createQuery(
+            'SELECT a
+            FROM App\Entity\Legume a
+            WHERE a.user = ' . $user
+        );
+
+        return $query->getResult();
+    }
     // /**
     //  * @return Legume[] Returns an array of Legume objects
     //  */
