@@ -66,6 +66,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $updated_at;
 
+    /**
+     * @Assert\Regex(
+     *     pattern     = "/^[A-Za-zÀ-úœ'\-\s]+$/i",
+     *     htmlPattern = "[A-Za-zÀ-úœ'\-\s]+",
+     *     message="Veuillez saisir un prénom valide."
+     * )
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 25,
+     *      minMessage = "Le nom doit avoir au minimum {{ limit }} caractères",
+     *      maxMessage = "Le nom ne peut avoir plus de {{ limit }} caractères"
+     * )
+     * @ORM\Column(type="string", length=50)
+     */
+    private $lastname;
+
+    /**
+     * @Assert\Regex(
+     *     pattern     = "/^[A-Za-zÀ-úœ'\-\s]+$/i",
+     *     htmlPattern = "[A-Za-zÀ-úœ'\-\s]+",
+     *     message="Veuillez saisir un prénom valide."
+     * )
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 25,
+     *      minMessage = "Le prénom doit avoir au minimum {{ limit }} caractères",
+     *      maxMessage = "Le prénom ne peut avoir plus de {{ limit }} caractères"
+     * )
+     * @ORM\Column(type="string", length=50)
+     */
+    private $firstname;
+
     public function __construct()
     {
         $this->legume = new ArrayCollection();
@@ -197,6 +229,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdatedAt(?\DateTimeImmutable $updated_at): self
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(string $lastname): self
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    public function getFirstname(): ?string
+    {
+        return $this->firstname;
+    }
+
+    public function setFirstname(string $firstname): self
+    {
+        $this->firstname = $firstname;
 
         return $this;
     }
