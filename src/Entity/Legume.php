@@ -58,6 +58,16 @@ class Legume
      */
     private $updated_at;
 
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $modeSemis;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $comments;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -143,6 +153,30 @@ class Legume
     public function setUpdatedAt(\DateTimeImmutable $updated_at): self
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getModeSemis(): ?string
+    {
+        return $this->modeSemis;
+    }
+
+    public function setModeSemis(string $modeSemis): self
+    {
+        $this->modeSemis = $modeSemis;
+
+        return $this;
+    }
+
+    public function getComments(): ?string
+    {
+        return $this->comments;
+    }
+
+    public function setComments(?string $comments): self
+    {
+        $this->comments = $comments;
 
         return $this;
     }
