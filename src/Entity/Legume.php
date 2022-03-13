@@ -60,13 +60,21 @@ class Legume
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Groups("legume_read")
      */
     private $modeSemis;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("legume_read")
      */
     private $comments;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     * @Groups("legume_read")
+     */
+    private $dateArrosage;
 
     public function getId(): ?int
     {
@@ -177,6 +185,18 @@ class Legume
     public function setComments(?string $comments): self
     {
         $this->comments = $comments;
+
+        return $this;
+    }
+
+    public function getDateArrosage(): ?\DateTimeInterface
+    {
+        return $this->dateArrosage;
+    }
+
+    public function setDateArrosage(?\DateTimeInterface $dateArrosage): self
+    {
+        $this->dateArrosage = $dateArrosage;
 
         return $this;
     }
