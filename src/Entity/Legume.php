@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=LegumeRepository::class)
  */
@@ -20,24 +21,28 @@ class Legume
     /**
      * @ORM\Column(type="date")
      * @Groups("legume_read")
+     * @Assert\NotBlank
      */
     private $date_semis;
 
     /**
      * @ORM\Column(type="string", length=50)
      * @Groups("legume_read")
+     * @Assert\NotBlank
      */
     private $variete;
 
     /**
      * @ORM\Column(type="string", length=50)
      * @Groups("legume_read")
+     * @Assert\NotBlank
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=50)
      * @Groups("legume_read")
+     * @Assert\NotBlank
      */
     private $family;
 
@@ -61,6 +66,7 @@ class Legume
     /**
      * @ORM\Column(type="string", length=50)
      * @Groups("legume_read")
+     * @Assert\NotBlank
      */
     private $modeSemis;
 

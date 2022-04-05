@@ -98,9 +98,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $firstname;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Potager::class, mappedBy="user")
+     */
+    private $potagers;
+
     public function __construct()
     {
         $this->legume = new ArrayCollection();
+        $this->potagers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -253,6 +259,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstname(string $firstname): self
     {
         $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Potager>
+     */
+    public function getPotagers(): Collection
+    {
+        return $this->potagers;
+    }
+
+    public function addPotager(Potager $potager): self
+    {
+        if (!$this->potagers->contains($potager)) {
+            $this->potagers[] = $potager;
+            $potager->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePotager(Potager $potager): self
+    {
+        if ($this->potagers->removeElement($potager)) {
+            // set the owning side to null (unless already changed)
+            if ($potager->getUser() === $this) {
+                $potager->setUser(null);
+            }
+        }
 
         return $this;
     }
