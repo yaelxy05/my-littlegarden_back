@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Potager;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Potager|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,7 +19,19 @@ class PotagerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Potager::class);
     }
+    public function findPotagerForOneUser(User $user)
+    {
+        $user = $user->getId();
+        $entityManager = $this->getEntityManager();
 
+        $query = $entityManager->createQuery(
+            'SELECT a
+            FROM App\Entity\Potager a
+            WHERE a.user = ' . $user
+        );
+
+        return $query->getResult();
+    }
     // /**
     //  * @return Potager[] Returns an array of Potager objects
     //  */

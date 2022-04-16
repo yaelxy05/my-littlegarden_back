@@ -20,7 +20,7 @@ class PotagerController extends AbstractController
     public function potager(PotagerRepository $potagerRepository): Response
     {
         $user = $this->getUser();
-        $potager = $potagerRepository->findLegumeForOneUser($user);
+        $potager = $potagerRepository->findPotagerForOneUser($user);
         return $this->json($potager, 200, [], ['groups' => 'potager_read']);
     }
 

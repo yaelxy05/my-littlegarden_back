@@ -51,6 +51,7 @@ class Potager
 
     /**
      * @ORM\OneToMany(targetEntity=Plant::class, mappedBy="potager")
+     * @Groups("potager_read")
      */
     private $plants;
 

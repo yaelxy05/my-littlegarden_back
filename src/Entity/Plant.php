@@ -16,24 +16,28 @@ class Plant
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups("plant_read")
+     * @Groups("potager_read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=50)
      * @Groups("plant_read")
+     * @Groups("potager_read")
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=50)
      * @Groups("plant_read")
+     * @Groups("potager_read")
      */
     private $family;
 
     /**
      * @ORM\Column(type="string", length=50)
      * @Groups("plant_read")
+     * @Groups("potager_read")
      */
     private $variete;
 
