@@ -79,6 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *      maxMessage = "Le nom ne peut avoir plus de {{ limit }} caractères"
      * )
      * @ORM\Column(type="string", length=50)
+     * @Groups("user_read")
      */
     private $lastname;
 
@@ -95,6 +96,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *      maxMessage = "Le prénom ne peut avoir plus de {{ limit }} caractères"
      * )
      * @ORM\Column(type="string", length=50)
+     * @Groups("user_read")
      */
     private $firstname;
 
