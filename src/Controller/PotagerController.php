@@ -58,4 +58,34 @@ class PotagerController extends AbstractController
         return $this->json($potager, 200, [], ['groups' => 'potager_read'], Response::HTTP_CREATED);
     }
 
+        /**
+     * Delete potager
+     * 
+     * @Route("/api/potager/{id<\d+>}", name="api_potager_delete", methods="DELETE")
+     */
+    public function delete(Potager $potager = null, EntityManagerInterface $entityManager)
+    {
+        // 404
+        if ($potager === null) {
+
+            // Optionnel, message pour le front
+            $message = [
+                'status' => Response::HTTP_NOT_FOUND,
+                'error' => 'potager non trouvé.',
+            ];
+
+            // On défini un message custom et un status code HTTP 404
+            return $this->json($message, Response::HTTP_NOT_FOUND);
+        }
+
+        // Sinon on supprime en base
+        $entityManager->remove($potager);
+        $entityManager->flush();
+
+        // L'objet $movie existe toujours en mémoire PHP jusqu'à la fin du script
+        return $this->json(
+            ['message' => 'Le potager ' . $potager->getName() . ' a été supprimé !'],
+            Response::HTTP_OK);
+    }
+
 }

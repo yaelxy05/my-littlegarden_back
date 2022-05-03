@@ -57,4 +57,34 @@ class PlantController extends AbstractController
         // We redirect to legume_read
         return $this->json($plant, 200, [], ['groups' => 'plant_read'], Response::HTTP_CREATED);
     }
+
+    /**
+     * Delete plant
+     * 
+     * @Route("/api/plant/{id<\d+>}", name="api_plant_delete", methods="DELETE")
+     */
+    public function delete(Plant $plant = null, EntityManagerInterface $entityManager)
+    {
+        // 404
+        if ($plant === null) {
+
+            // Optionnel, message pour le front
+            $message = [
+                'status' => Response::HTTP_NOT_FOUND,
+                'error' => 'Plant non trouvé.',
+            ];
+
+            // On défini un message custom et un status code HTTP 404
+            return $this->json($message, Response::HTTP_NOT_FOUND);
+        }
+
+        // Sinon on supprime en base
+        $entityManager->remove($plant);
+        $entityManager->flush();
+
+        // L'objet $movie existe toujours en mémoire PHP jusqu'à la fin du script
+        return $this->json(
+            ['message' => 'Le plant ' . $plant->getName() . ' a été supprimé !'],
+            Response::HTTP_OK);
+    }
 }
