@@ -105,6 +105,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $potagers;
 
+    /**
+     * @ORM\Column(type="object", nullable=true)
+     */
+    private $avatar;
+
+
     public function __construct()
     {
         $this->legume = new ArrayCollection();
@@ -291,6 +297,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $potager->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar($avatar): self
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }
