@@ -46,6 +46,7 @@ class UserController extends AbstractController
         $user->setFirstname($userData['firstname']);
         $user->setLastname($userData['lastname']);
         $user->setPassword($userData['password']);
+        $user->setImageSize($userData['imageSize']);
         $user->setRoles(['ROLE_USER']);
 
         $password = $user->getPassword();
