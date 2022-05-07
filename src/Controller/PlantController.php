@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Plant;
+use App\Entity\Potager;
 use App\Repository\PlantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,8 +28,14 @@ class PlantController extends AbstractController
     /**
      * @Route("/api/plant/create", name="api_plant_create", methods="POST")
      */
-    public function plantCreate(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
+    public function plantCreate(Potager $potager, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
+        $size = $potager->getSize();
+        dd($size);
+        if($size === 33) {
+            echo "coucou";
+        }
+        
         // Retrieve the content of the request, i.e. the JSON
         $jsonContent = $request->getContent();
 
@@ -61,7 +68,7 @@ class PlantController extends AbstractController
     /**
      * Delete plant
      * 
-     * @Route("/api/plant/{id<\d+>}", name="api_plant_delete", methods="DELETE")
+     * @Route("/api/plant/delete/{id<\d+>}", name="api_plant_delete", methods="DELETE")
      */
     public function delete(Plant $plant = null, EntityManagerInterface $entityManager)
     {

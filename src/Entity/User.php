@@ -3,10 +3,11 @@
 namespace App\Entity;
 
 use DateTimeImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\HttpFoundation\File\File;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -106,9 +107,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $potagers;
 
     /**
-     * @ORM\Column(type="object", nullable=true)
+     * @ORM\Column(type="string", nullable=true)
+     * @Groups("user_read")
      */
     private $avatar;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $imageSize;
 
 
     public function __construct()
@@ -309,6 +316,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatar($avatar): self
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getImageSize(): ?int
+    {
+        return $this->imageSize;
+    }
+
+    public function setImageSize(?int $imageSize): self
+    {
+        $this->imageSize = $imageSize;
 
         return $this;
     }

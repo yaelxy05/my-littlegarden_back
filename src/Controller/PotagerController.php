@@ -58,10 +58,10 @@ class PotagerController extends AbstractController
         return $this->json($potager, 200, [], ['groups' => 'potager_read'], Response::HTTP_CREATED);
     }
 
-        /**
+    /**
      * Delete potager
      * 
-     * @Route("/api/potager/{id<\d+>}", name="api_potager_delete", methods="DELETE")
+     * @Route("/api/potager/delete/{id<\d+>}", name="api_potager_delete", methods="DELETE")
      */
     public function delete(Potager $potager = null, EntityManagerInterface $entityManager)
     {

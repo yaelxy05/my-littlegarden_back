@@ -4,14 +4,18 @@ namespace App\Controller\Api;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\UploaderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
@@ -20,46 +24,58 @@ class UserController extends AbstractController
     /**
      * @Route("/api/register", name="api_register", methods="POST")
      */
-    public function register(EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordEncoder, Request $request, ValidatorInterface $validator, SerializerInterface $serializer): Response
+    public function register(UploaderHelper $uploaderHelper, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordEncoder, Request $request, ValidatorInterface $validator)
     {
-        $jsonContent = $request->getContent();
-        
-        $user = $serializer->deserialize($jsonContent, User::class, 'json');
+        $userData = $request->request->all();
 
-        $errors = $validator->validate($user);
-        
-        // If there is at least one error, we return a 400
+        $errors = $validator->validate($userData);
+
         if (count($errors) > 0) {
-            $errorsList = [];
-            foreach ($errors as $erreur) {
-                $input = $erreur->getPropertyPath();
-                $errorsList[$input] = $erreur->getMessage();
-            }
 
-            return $this->json(
-                [
-                    'error' => $errorsList
-                ],
-                400
-            );
+            // The array of errors is returned as JSON
+            // With an error status 422
+            // @see https://fr.wikipedia.org/wiki/Liste_des_codes_HTTP
+            return $this->json($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-       
+
+        $user = new User();
+        //$user = $this->getUser();
+
+        //$user->setUser($user);
+        $user->setEmail($userData['email']);
+        $user->setFirstname($userData['firstname']);
+        $user->setLastname($userData['lastname']);
+        $user->setPassword($userData['password']);
+        $user->setRoles(['ROLE_USER']);
+
         $password = $user->getPassword();
         // This is where we encode the User password (found in $ user)
         $encodedPassword = $passwordEncoder->hashPassword($user, $password);
         // We reassign the password encoded in the User
         $user->setPassword($encodedPassword);
-        $user->setRoles(['ROLE_USER']);
+
+
         $user->setCreatedAt(new \DateTimeImmutable());
 
+
+        // retrieves an instance of UploadedFile identified by picture
+        $uploadedFile = $request->files->get('avatar');
+
+        if ($uploadedFile) {
+            $newFilename = $uploaderHelper->uploadImage($uploadedFile);
+            $user->setAvatar($newFilename);
+        }
         // We save the user
         $entityManager->persist($user);
         $entityManager->flush();
-          
+
+
+        // We redirect to api_user_read
         return $this->json([
-                'user' => $user
-            ], Response::HTTP_CREATED);
+            'user' => $user,
+        ], Response::HTTP_CREATED, [], ['groups' => 'user_read']);
     }
+
     /**
      * @Route("/api/users", name="api_users", methods="GET")
      */
@@ -113,5 +129,4 @@ class UserController extends AbstractController
         // Condition the return message in case the entity is not modified
         return $this->json(['message' => "Les informations utilisateur ont bien été modifié."], Response::HTTP_OK);
     }
-
 }
