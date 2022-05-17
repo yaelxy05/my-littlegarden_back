@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PlantRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -24,6 +25,12 @@ class Plant
      * @ORM\Column(type="string", length=50)
      * @Groups("plant_read")
      * @Groups("potager_read")
+     * @Assert\NotBlank
+     * @Assert\Unique
+     * @Assert\Length(
+     *      max = 49,
+     *      maxMessage = "Le nom ne peut avoir plus de {{ limit }} caractères"
+     * )
      */
     private $name;
 
@@ -31,6 +38,11 @@ class Plant
      * @ORM\Column(type="string", length=50)
      * @Groups("plant_read")
      * @Groups("potager_read")
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *      max = 49,
+     *      maxMessage = "Le nom ne peut avoir plus de {{ limit }} caractères"
+     * )
      */
     private $family;
 
@@ -38,6 +50,11 @@ class Plant
      * @ORM\Column(type="string", length=50)
      * @Groups("plant_read")
      * @Groups("potager_read")
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *      max = 49,
+     *      maxMessage = "Le nom ne peut avoir plus de {{ limit }} caractères"
+     * )
      */
     private $variete;
 

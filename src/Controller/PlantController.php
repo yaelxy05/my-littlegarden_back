@@ -28,13 +28,8 @@ class PlantController extends AbstractController
     /**
      * @Route("/api/plant/create", name="api_plant_create", methods="POST")
      */
-    public function plantCreate(Potager $potager, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
+    public function plantCreate(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
-        $size = $potager->getSize();
-        dd($size);
-        if($size === 33) {
-            echo "coucou";
-        }
         
         // Retrieve the content of the request, i.e. the JSON
         $jsonContent = $request->getContent();

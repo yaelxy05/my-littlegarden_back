@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\PotagerRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\PotagerRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PotagerRepository::class)
@@ -24,12 +25,26 @@ class Potager
     /**
      * @ORM\Column(type="string", length=50)
      * @Groups("potager_read")
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *      max = 49,
+     *      maxMessage = "Le nom ne peut avoir plus de {{ limit }} caractères"
+     * )
+     * @Assert\Regex(
+     *     pattern     = "[\D][a-zA-Z]",
+     *     message="Veuillez saisir un nom valide, pas de chiffre."
+     * )
      */
     private $name;
 
     /**
      * @ORM\Column(type="smallint")
      * @Groups("potager_read")
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *      max = 49,
+     *      maxMessage = "Le nom ne peut avoir plus de {{ limit }} caractères"
+     * )
      */
     private $size;
 
