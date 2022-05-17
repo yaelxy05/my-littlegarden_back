@@ -26,7 +26,6 @@ class Plant
      * @Groups("plant_read")
      * @Groups("potager_read")
      * @Assert\NotBlank
-     * @Assert\Unique
      * @Assert\Length(
      *      max = 49,
      *      maxMessage = "Le nom ne peut avoir plus de {{ limit }} caractères"
