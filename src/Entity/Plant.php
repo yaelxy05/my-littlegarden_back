@@ -70,6 +70,7 @@ class Plant
     /**
      * @ORM\ManyToOne(targetEntity=Potager::class, inversedBy="plants")
      * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $potager;
 
