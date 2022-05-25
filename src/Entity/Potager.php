@@ -30,10 +30,6 @@ class Potager
      *      max = 49,
      *      maxMessage = "Le nom ne peut avoir plus de {{ limit }} caractères"
      * )
-     * @Assert\Regex(
-     *     pattern     = "[\D][a-zA-Z]",
-     *     message="Veuillez saisir un nom valide, pas de chiffre."
-     * )
      */
     private $name;
 
@@ -65,7 +61,7 @@ class Potager
     private $updated_at;
 
     /**
-     * @ORM\OneToMany(targetEntity=Plant::class, mappedBy="potager")
+     * @ORM\OneToMany(targetEntity=Plant::class, mappedBy="potager", cascade={"remove"})
      * @Groups("potager_read")
      */
     private $plants;
