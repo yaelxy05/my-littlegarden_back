@@ -112,11 +112,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $avatar;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $imageSize;
-
 
     public function __construct()
     {
@@ -316,18 +311,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatar($avatar): self
     {
         $this->avatar = $avatar;
-
-        return $this;
-    }
-
-    public function getImageSize(): ?int
-    {
-        return $this->imageSize;
-    }
-
-    public function setImageSize(?int $imageSize): self
-    {
-        $this->imageSize = $imageSize;
 
         return $this;
     }
