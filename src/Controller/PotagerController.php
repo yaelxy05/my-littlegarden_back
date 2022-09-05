@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PotagerController extends AbstractController
-{
+{ 
     /**
      * @Route("/api/potager", name="api_potager")
      */
@@ -23,7 +23,7 @@ class PotagerController extends AbstractController
         $potager = $potagerRepository->findPotagerForOneUser($user);
         return $this->json($potager, 200, [], ['groups' => 'potager_read']);
     }
-
+ 
     /**
      * @Route("/api/potager/create", name="api_potager_create", methods="POST")
      */

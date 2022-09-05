@@ -29,7 +29,7 @@ class LegumeRepository extends ServiceEntityRepository
             FROM App\Entity\Legume a
             WHERE a.user = ' . $user
         );
-
+ 
         return $query->getResult();
     }
     // /**
