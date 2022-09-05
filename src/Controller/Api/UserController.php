@@ -31,6 +31,7 @@ class UserController extends AbstractController
         $errors = $validator->validate($userData);
 
         if (count($errors) > 0) {
+            
 
             // The array of errors is returned as JSON
             // With an error status 422
@@ -46,7 +47,6 @@ class UserController extends AbstractController
         $user->setFirstname($userData['firstname']);
         $user->setLastname($userData['lastname']);
         $user->setPassword($userData['password']);
-        $user->setImageSize($userData['imageSize']);
         $user->setRoles(['ROLE_USER']);
 
         $password = $user->getPassword();
