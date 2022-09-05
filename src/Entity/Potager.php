@@ -34,7 +34,7 @@ class Potager
      *      max = 49,
      *      maxMessage = "Le nom ne peut avoir plus de {{ limit }} caractères"
      * )
-     * @Assert\Regex("/^[A-Za-zÀ-ÖØ-öø-ÿ-]*$/", message="Votre nom de potager est incorrect, il ne doit pas contenir de chiffre")
+     * @Assert\Regex("/^[A-Za-zÀ-ÖØ-öø-ÿ0-9-]*$/", message="Votre nom de potager est incorrect, il ne doit pas contenir de caractères spéciaux")
      */
     private $name;
 

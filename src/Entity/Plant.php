@@ -6,9 +6,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PlantRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
  * @ORM\Entity(repositoryClass=PlantRepository::class)
+ * @UniqueEntity("name")
  */
 class Plant
 {
@@ -30,6 +33,7 @@ class Plant
      *      max = 49,
      *      maxMessage = "Le nom ne peut avoir plus de {{ limit }} caractères"
      * )
+     * @Assert\Regex("/^[A-Za-zÀ-ÖØ-öø-ÿ0-9-]*$/", message="Votre nom de plant est incorrect, il ne doit pas contenir de caractères spéciaux")
      */
     private $name;
 
