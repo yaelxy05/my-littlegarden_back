@@ -48,7 +48,7 @@ class Legume
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="legume")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      * @Groups("legume_read")
      */
     private $user;

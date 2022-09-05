@@ -61,7 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $created_at;
 
     /**
-     * @ORM\OneToMany(targetEntity=Legume::class, mappedBy="user")
+     * @ORM\OneToMany(targetEntity=Legume::class, mappedBy="user", cascade={"remove"})
      * @Groups("user_read")
      */
     private $legume;
