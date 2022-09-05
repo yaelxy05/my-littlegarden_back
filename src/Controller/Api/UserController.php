@@ -92,7 +92,7 @@ class UserController extends AbstractController
     /**
      * @Route("/api/user/update/{id<\d+>}", name="api_user_update", methods="PATCH")
      */
-    public function reservationUpdate(User $user = null, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
+    public function userUpdate(User $user = null, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
         // We want to modify the reservation whose id is transmitted via the URL
 
