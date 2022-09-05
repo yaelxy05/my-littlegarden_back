@@ -132,6 +132,46 @@ class UserController extends AbstractController
     }
 
     /**
+     * Edit user avatar (POST)
+     * 
+     * @Route("/api/user/{id<\d+>}/update/avatar", name="api_user_update_avatar", methods={"POST"})
+     */
+    public function updateUserAvatar(User $user, EntityManagerInterface $entityManager, UploaderHelper $uploaderHelper, Request $request, ValidatorInterface $validator)
+    {
+        
+        // We should make an edit function specially for image because in API we couldn't use the methods PUT and PATCH with the multipart/form-data
+        
+        $userData = $request->request->all();
+        
+        $errors = $validator->validate($userData);
+        
+        if (count($errors) > 0) {
+
+            // The array of errors is returned as JSON
+            // With an error status 422
+            // @see https://fr.wikipedia.org/wiki/Liste_des_codes_HTTP
+            return $this->json($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // retrieves an instance of UploadedFile identified by picture
+        $uploadedFile = $request->files->get('avatar');
+
+        if ($uploadedFile) {
+            $newFilename = $uploaderHelper->uploadImage($uploadedFile);
+            $user->setAvatar($newFilename);
+        }
+        // We save the animal
+        $entityManager->persist($user);
+        $entityManager->flush();
+    
+
+        // We redirect to api_animal_read
+        return $this->json([
+            'user' => $user,
+        ], Response::HTTP_OK, [], ['groups' => 'user_read']);
+    }
+
+    /**
      * Delete a user
      * 
      * @Route("/api/user/delete", name="api_user_delete", methods={"DELETE"})
