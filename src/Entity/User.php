@@ -106,7 +106,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $firstname;
 
     /**
-     * @ORM\OneToMany(targetEntity=Potager::class, mappedBy="user")
+     * @ORM\OneToMany(targetEntity=Potager::class, mappedBy="user", cascade={"remove"})
      */
     private $potagers;
 
