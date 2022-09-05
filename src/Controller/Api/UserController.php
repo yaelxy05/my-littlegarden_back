@@ -130,4 +130,34 @@ class UserController extends AbstractController
         // Condition the return message in case the entity is not modified
         return $this->json(['message' => "Les informations utilisateur ont bien été modifié."], Response::HTTP_OK);
     }
+
+    /**
+     * Delete a user
+     * 
+     * @Route("/api/user/delete", name="api_user_delete", methods={"DELETE"})
+     */
+    public function delete(EntityManagerInterface $entityManager): Response
+    {
+        // we take the current user to delete it.
+        $user = $this->getUser();
+    
+        if ($user === null) {
+
+            // Optional, message for the front
+            $message = [
+                'status' => Response::HTTP_NOT_FOUND,
+                'error' => 'Utilisateur non trouvé.',
+            ];
+            // We define a custom message and an HTTP 404 status code
+            return $this->json($message, Response::HTTP_NOT_FOUND);
+        }
+        
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        return $this->json(
+            ['message' => 'L\'utilisateur a bien été supprimé'],
+            Response::HTTP_OK
+        );
+    }
 }
