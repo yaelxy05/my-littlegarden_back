@@ -90,9 +90,9 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/user/update/{id<\d+>}", name="api_user_update", methods="PATCH")
+     * @Route("/api/user/update", name="api_user_update", methods="PATCH")
      */
-    public function userUpdate(User $user = null, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
+    public function userUpdate(User $user = null, UserPasswordHasherInterface $passwordEncoder, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
         // We want to modify the reservation whose id is transmitted via the URL
 
@@ -123,6 +123,13 @@ class UserController extends AbstractController
             // We return the error table in Json to the front with a status code 422
             return $this->json($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+
+        $password = $user->getPassword();
+        $hashedPassword = $passwordEncoder->hashPassword($user, $password);
+        
+        // We reassign the password encoded in the User
+        $user->setPassword($hashedPassword);
+
 
         // On flush $reservation which has been modified by the Serializer
         $em->flush();
