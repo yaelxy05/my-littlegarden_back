@@ -90,16 +90,19 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/user/update/{id<\d+>}", name="api_user_update", methods="PATCH")
+     * Edit user (PUT et PATCH)
+     *
+     * @Route("/api/user/update", name="api_user_update_put", methods={"PUT"})
+     * @Route("/api/user/update", name="api_user_update_patch", methods={"PATCH"})
      */
-    public function userUpdate(User $user = null, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
+    public function userUpdate(User $user = null, EntityManagerInterface $em, UserPasswordHasherInterface $passwordEncoder, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
         // We want to modify the reservation whose id is transmitted via the URL
 
         // 404 ?
         if ($user === null) {
             // We return a JSON message + a 404 status
-            return $this->json(['error' => "L'utilisateur' n\'a pas été trouvé."], Response::HTTP_NOT_FOUND);
+            return $this->json(['error' => "L'utilisateur n'a pas été trouvé."], Response::HTTP_NOT_FOUND);
         }
 
         // Our JSON which is in the body
@@ -130,6 +133,39 @@ class UserController extends AbstractController
         // Condition the return message in case the entity is not modified
         return $this->json(['message' => "Les informations utilisateur ont bien été modifié."], Response::HTTP_OK);
     }
+
+        /**
+     * @Route("/api/user/update/password", name="app_account_password")
+     */
+    /*public function userUpdatePassword(Request $request, UserPasswordHasherInterface $encoder): Response
+    {
+        $notification = null;
+
+        $user = $this->getUser();
+        $form = $this->createForm(ChangePasswordType::class, $user);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $old_pwd = $form->get('old_password')->getData();
+
+            if($encoder->isPasswordValid($user, $old_pwd)){
+                $new_pwd = $form->get('new_password')->getData();
+                $password = $encoder->hashPassword($user, $new_pwd);
+                $user->setPassword($password);
+                $this->entityManager->flush();
+
+                $notification = "Votre mot de passe à été mis à jour";
+            } else {
+                $notification = "Votre mot de passe est invalide";
+            }
+        }
+
+        return $this->render('account/password.html.twig', [
+            'form' => $form->createView(),
+            'notification' => $notification
+        ]);
+    }*/
 
     /**
      * Edit user avatar (POST)
