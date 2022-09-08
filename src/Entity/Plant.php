@@ -33,7 +33,7 @@ class Plant
      *      max = 49,
      *      maxMessage = "Le nom ne peut avoir plus de {{ limit }} caractères"
      * )
-     * @Assert\Regex("/^[A-Za-zÀ-ÖØ-öø-ÿ0-9-]*$/", message="Votre nom de plant est incorrect, il ne doit pas contenir de caractères spéciaux")
+     * @Assert\Regex("/^[A-Za-zÀ-ÖØ-öø-ÿ0-9-\s+]*$/", message="Votre nom de plant est incorrect, il ne doit pas contenir de caractères spéciaux")
      */
     private $name;
 
