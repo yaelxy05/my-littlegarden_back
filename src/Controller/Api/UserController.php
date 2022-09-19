@@ -3,10 +3,13 @@
 namespace App\Controller\Api;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\Service\UploaderHelper;
+use App\Repository\UserRepository;
+use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Image;
@@ -90,24 +93,67 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/user/update/{id<\d+>}", name="api_user_update", methods="PATCH")
+     * Method changes the user's password
+     * @Route("/{id}/password-edit", name="password_edit", methods={"PATCH"}, requirements={"id"="\d+"})
+     *
+     * @return void
      */
-    public function userUpdate(User $user = null, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
+    public function passwordEdit(User $user, EntityManagerInterface $entityManager, Request $request, UserPasswordHasherInterface $passwordHasher)
     {
-        // We want to modify the reservation whose id is transmitted via the URL
+        $jsonData = $request->getContent();
+        $passwordObj = json_decode($jsonData);
 
-        // 404 ?
+        // We check if the password contains the minimum required
+        if (!preg_match('@^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$@', $passwordObj->newPassword)) {
+            return $this->json([
+                'message' => 'Votre mot de passe doit comporter au moins huit caractères, dont au moins une majuscule et minuscule, un chiffre et un symbole.'
+            ], 400);
+        } else {
+            // We check if the password entered by the user is the same as the one in the database
+            if (password_verify($passwordObj->oldPassword, $user->getPassword())) {
+                $user->setPassword($passwordHasher->hashPassword(
+                    $user,
+                    $passwordObj->newPassword
+                ));
+
+                // If all is good, we hash and modify the user's password, and we send him an email to warn him
+                $user->setUpdatedAt(new \DateTimeImmutable());
+                
+                // We save the user
+                $entityManager->persist($user);
+                $entityManager->flush();
+                
+                //$this->getDoctrine()->getManager()->flush();
+                return $this->json([
+                    'message' => 'Le mot de passe a bien été mis à jour.'
+                ]);
+            } else {
+                return $this->json([
+                    'message' => 'Le mot de passe actuel est incorrect.'
+                ], 400);
+            }
+        }
+    }
+
+    /**
+     * Edit user (PUT et PATCH)
+     *
+     * @Route("/api/user/update", name="api_user_update_put", methods={"PUT"})
+     * @Route("/api/user/update", name="api_user_update_patch", methods={"PATCH"})
+     */
+    /*public function userUpdate(User $user = null, EntityManagerInterface $em, UserPasswordHasherInterface $passwordEncoder, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
+    {
+        $user = $this->getUser();
+        // 1. We want to modify the refuge whose id is transmitted via the URL
+        // 404 page error ?
         if ($user === null) {
             // We return a JSON message + a 404 status
-            return $this->json(['error' => "L'utilisateur' n\'a pas été trouvé."], Response::HTTP_NOT_FOUND);
+            return $this->json(['error' => 'Désolé cet utilisateur n\'existe pas.'], Response::HTTP_NOT_FOUND);
         }
 
         // Our JSON which is in the body
         $jsonContent = $request->getContent();
-
-        /* We will have to associate the JSON data received on the existing entity
-        We deserialize the data received from the front ($ request-> getContent ()) ...
-        ... in the reservation object to modify */
+        
         $serializer->deserialize(
             $jsonContent,
             User::class,
@@ -115,21 +161,41 @@ class UserController extends AbstractController
             // We have this additional argument which tells the serializer which existing entity to modify
             [AbstractNormalizer::OBJECT_TO_POPULATE => $user]
         );
-
-        // Validation of the deserialized entity
+        
+        // Validate the deserialize entity
         $errors = $validator->validate($user);
-        // Generating errors
+        // Generate errors
         if (count($errors) > 0) {
             // We return the error table in Json to the front with a status code 422
             return $this->json($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        // On flush $reservation which has been modified by the Serializer
+        $password = $user->getPassword();
+        $hashedPassword = $passwordEncoder->hashPassword($user, $user->getPassword());
+        
+        // We reassign the password encoded in the User
+        $user->setPassword($hashedPassword);
+
+        /* 
+        $hashedPassword = $passwordEncoder->encodePassword($user, $user->getPassword());
+        
+        // We reassign the password encoded in the User
+        $user->setPassword($hashedPassword);
+        
+
+
+        $password = $user->getPassword();
+        // This is where we encode the User password (found in $ user)
+        $encodedPassword = $passwordEncoder->hashPassword($user, $password);
+        // We reassign the password encoded in the User
+        $user->setPassword($encodedPassword);
+
+        // On flush $user which has been modified by the Serializer
         $em->flush();
 
-        // Condition the return message in case the entity is not modified
-        return $this->json(['message' => "Les informations utilisateur ont bien été modifié."], Response::HTTP_OK);
-    }
+        return $this->json(['message' => 'Identifiants de connexion modifiées.'], Response::HTTP_OK);
+    }*/
+
 
     /**
      * Edit user avatar (POST)
