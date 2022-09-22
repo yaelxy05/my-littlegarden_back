@@ -94,7 +94,7 @@ class UserController extends AbstractController
 
     /**
      * Method changes the user's password
-     * @Route("/{id}/password-edit", name="password_edit", methods={"PATCH"}, requirements={"id"="\d+"})
+     * @Route("/api/{id}/password-edit", name="password_edit", methods={"PATCH"}, requirements={"id"="\d+"})
      *
      * @return void
      */
